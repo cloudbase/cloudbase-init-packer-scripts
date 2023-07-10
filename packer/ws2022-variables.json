@@ -1,0 +1,12 @@
+{
+  "image_offer": "WindowsServer",
+  "image_publisher": "MicrosoftWindowsServer",
+  "image_sku": "2022-datacenter-core-smalldisk-g2",
+  "image_version": "latest",
+
+  "location": "westeurope",
+  "vm_size": "Standard_D2s_v3",
+
+  "image_name": "ws-ltsc2022-cbsl-init",
+  "cloudbase_init_version": "1.1.4"
+}

@@ -1,0 +1,78 @@
+{
+  "variables": {
+    "subscription_id": "{{ env `AZURE_SUBSCRIPTION_ID` }}",
+    "tenant_id": "{{ env `AZURE_TENANT_ID` }}",
+    "client_id": "{{ env `AZURE_CLIENT_ID` }}",
+    "client_secret": "{{ env `AZURE_CLIENT_SECRET` }}",
+    "resource_group_name": "{{ env `RESOURCE_GROUP_NAME` }}",
+
+    "image_name": "{{ user `image_name` }}",
+    "image_publisher": "{{ user `image_publisher` }}",
+    "image_offer": "{{ user `image_offer` }}",
+    "image_sku": "{{ user `image_sku` }}",
+    "image_version": "{{ user `image_version` }}",
+
+    "location": "{{ user `location` }}",
+    "vm_size": "{{ user `vm_size` }}",
+
+    "cloudbase_init_version": "{{ user `vm_size` }}"
+  },
+  "builders": [
+    {
+      "type": "azure-arm",
+      "name": "packer-image-builder-{{ timestamp }}",
+
+      "subscription_id": "{{ user `subscription_id` }}",
+      "tenant_id": "{{ user `tenant_id` }}",
+      "client_id": "{{ user `client_id` }}",
+      "client_secret": "{{ user `client_secret` }}",
+
+      "managed_image_name": "{{ user `image_name` }}-{{ isotime | clean_resource_name }}",
+      "managed_image_resource_group_name": "{{ user `resource_group_name` }}",
+      "temp_resource_group_name": "build-{{ user `image_name` }}-{{ isotime | clean_resource_name }}",
+
+      "vm_size": "{{ user `vm_size` }}",
+      "location": "{{ user `location` }}",
+
+      "os_type": "Windows",
+      "image_publisher": "{{ user `image_publisher` }}",
+      "image_offer": "{{ user `image_offer` }}",
+      "image_sku": "{{ user `image_sku` }}",
+      "image_version": "{{ user `image_version` }}",
+
+      "communicator": "winrm",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true,
+      "winrm_username": "packer",
+      "winrm_timeout": "10m"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "../PSModules/",
+      "destination": "C:\\Program Files\\WindowsPowerShell\\Modules"
+    },
+    {
+      "elevated_user": "packer",
+      "elevated_password": "{{.WinRMPassword}}",
+      "type": "powershell",
+      "environment_vars": [
+        "CLOUDBASE_INIT_VERSION={{ user `cloudbase_init_version` }}"
+      ],
+      "script": "../scripts/install-cloudbase-init.ps1"
+    },
+    {
+      "elevated_user": "packer",
+      "elevated_password": "{{.WinRMPassword}}",
+      "type": "powershell",
+      "script": "../scripts/sysprep.ps1"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "packer-manifest.json"
+    }
+  ]
+}
