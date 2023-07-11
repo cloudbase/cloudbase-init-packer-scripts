@@ -65,12 +65,12 @@
     {
       "type": "file",
       "source": "conf/cloudbase-init-unattend.conf",
-      "destination": "C:\\Cloudbase Solutions\\Cloudbase-Init\\conf\\cloudbase-init-unattend.conf"
+      "destination": "C:\\Program Files\\Cloudbase Solutions\\Cloudbase-Init\\conf\\cloudbase-init-unattend.conf"
     },
     {
       "type": "file",
       "source": "conf/cloudbase-init.conf",
-      "destination": "C:\\Cloudbase Solutions\\Cloudbase-Init\\conf\\cloudbase-init.conf"
+      "destination": "C:\\Program Files\\Cloudbase Solutions\\Cloudbase-Init\\conf\\cloudbase-init.conf"
     },
     {
       "elevated_user": "packer",
