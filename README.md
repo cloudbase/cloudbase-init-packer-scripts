@@ -1,1 +1,1 @@
-# Azure Cloudbase-Init imaging tools
+# Packer cloudbase-init scripts

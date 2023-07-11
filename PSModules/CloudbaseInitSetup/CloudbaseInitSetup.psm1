@@ -19,11 +19,9 @@ function Install-CloudbaseInit {
     if ($p.ExitCode -ne 0) {
         Throw "Failed to install cloudbase-init"
     }
+}
 
-    Write-Output "Copying the cloudbase-init conf files"
-    Copy-Item -Path "$PSScriptRoot\conf\cloudbase-init-unattended.conf" -Destination "$env:ProgramFiles\Cloudbase Solutions\Cloudbase-Init\conf\cloudbase-init-unattend.conf"
-    Copy-Item -Path "$PSScriptRoot\conf\cloudbase-init.conf" -Destination "$env:ProgramFiles\Cloudbase Solutions\Cloudbase-Init\conf\cloudbase-init.conf"
-
+function Invoke-CloudbaseInitSetupComplete {
     Write-Output "Running cloudbase-init SetSetupComplete.cmd"
     $setupCompleteScript = Join-Path $env:windir "Setup\Scripts\SetupComplete.cmd"
     if(Test-Path $setupCompleteScript) {

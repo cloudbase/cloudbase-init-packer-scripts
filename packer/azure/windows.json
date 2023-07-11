@@ -50,7 +50,7 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "../PSModules/",
+      "source": "../../PSModules/",
       "destination": "C:\\Program Files\\WindowsPowerShell\\Modules"
     },
     {
@@ -60,13 +60,29 @@
       "environment_vars": [
         "CLOUDBASE_INIT_VERSION={{ user `cloudbase_init_version` }}"
       ],
-      "script": "../scripts/install-cloudbase-init.ps1"
+      "script": "scripts/cloudbase-init/install.ps1"
+    },
+    {
+      "type": "file",
+      "source": "conf/cloudbase-init-unattend.conf",
+      "destination": "C:\\Cloudbase Solutions\\Cloudbase-Init\\conf\\cloudbase-init-unattend.conf"
+    },
+    {
+      "type": "file",
+      "source": "conf/cloudbase-init.conf",
+      "destination": "C:\\Cloudbase Solutions\\Cloudbase-Init\\conf\\cloudbase-init.conf"
     },
     {
       "elevated_user": "packer",
       "elevated_password": "{{.WinRMPassword}}",
       "type": "powershell",
-      "script": "../scripts/sysprep.ps1"
+      "script": "scripts/cloudbase-init/run-setupcomplete.ps1"
+    },
+    {
+      "elevated_user": "packer",
+      "elevated_password": "{{.WinRMPassword}}",
+      "type": "powershell",
+      "script": "scripts/sysprep.ps1"
     }
   ],
   "post-processors": [
