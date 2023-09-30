@@ -1,1 +1,1 @@
-# Packer cloudbase-init scripts
+# cloudbase-init packer scripts
