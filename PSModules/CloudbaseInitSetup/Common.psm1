@@ -2,12 +2,12 @@ $ErrorActionPreference = "Stop"
 
 function Start-ExecuteWithRetry {
     Param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [ScriptBlock]$ScriptBlock,
-        [int]$MaxRetryCount=10,
-        [int]$RetryInterval=3,
+        [int]$MaxRetryCount = 10,
+        [int]$RetryInterval = 3,
         [string]$RetryMessage,
-        [array]$ArgumentList=@()
+        [array]$ArgumentList = @()
     )
     $currentErrorActionPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
@@ -15,18 +15,21 @@ function Start-ExecuteWithRetry {
     while ($true) {
         try {
             $res = Invoke-Command -ScriptBlock $ScriptBlock `
-                                  -ArgumentList $ArgumentList
+                -ArgumentList $ArgumentList
             $ErrorActionPreference = $currentErrorActionPreference
             return $res
-        } catch [System.Exception] {
+        }
+        catch [System.Exception] {
             $retryCount++
             if ($retryCount -gt $MaxRetryCount) {
                 $ErrorActionPreference = $currentErrorActionPreference
                 throw
-            } else {
-                if($RetryMessage) {
+            }
+            else {
+                if ($RetryMessage) {
                     Write-Output "Retry (${retryCount}/${MaxRetryCount}): $RetryMessage"
-                } elseif($_) {
+                }
+                elseif ($_) {
                     Write-Output "Retry (${retryCount}/${MaxRetryCount}): $_"
                 }
                 Start-Sleep $RetryInterval
@@ -37,12 +40,12 @@ function Start-ExecuteWithRetry {
 
 function Start-FileDownload {
     Param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$URL,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$Destination,
-        [Parameter(Mandatory=$false)]
-        [int]$RetryCount=10
+        [Parameter(Mandatory = $false)]
+        [int]$RetryCount = 10
     )
     Write-Output "Downloading $URL to $Destination"
     Start-ExecuteWithRetry `
@@ -54,21 +57,21 @@ function Start-FileDownload {
 
 function Add-ToSystemPath {
     Param(
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [string[]]$Path
     )
 
-    if(!$Path) {
+    if (!$Path) {
         return
     }
 
     $systemPath = [Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine).Split(';')
     $currentPath = $env:PATH.Split(';')
-    foreach($p in $Path) {
-        if($p -notin $systemPath) {
+    foreach ($p in $Path) {
+        if ($p -notin $systemPath) {
             $systemPath += $p
         }
-        if($p -notin $currentPath) {
+        if ($p -notin $currentPath) {
             $currentPath += $p
         }
     }
@@ -82,8 +85,8 @@ function Confirm-EnvVarsAreSet {
     Param(
         [String[]]$EnvVars
     )
-    foreach($var in $EnvVars) {
-        if(!(Test-Path "env:${var}")) {
+    foreach ($var in $EnvVars) {
+        if (!(Test-Path "env:${var}")) {
             Throw "Missing required environment variable: $var"
         }
     }
